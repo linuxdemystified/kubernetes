@@ -2,9 +2,14 @@
 
 # Install docker from Docker-ce repository
 echo "[TASK 1] Install docker container engine"
-yum install -y -q yum-utils device-mapper-persistent-data lvm2 > /dev/null 2>&1
-yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo > /dev/null 2>&1
-yum install -y -q docker-ce-19.03.5 >/dev/null 2>&1
+apt install -y yum-utils device-mapper-persistent-data lvm2 > /dev/null 2>&1
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - > /dev/null 2>&1
+add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable" > /dev/null 2>&1
+apt-get update
+apt-get install docker-ce docker-ce-cli containerd.io >/dev/null 2>&1
 
 # Enable docker service
 echo "[TASK 2] Enable and start docker service"
@@ -26,7 +31,7 @@ EOF
 
 # Install Kubernetes
 echo "[TASK 4] Install Kubernetes (kubeadm, kubelet and kubectl)"
-yum install -y -q kubeadm-1.17.1 kubelet-1.17.1 kubectl-1.17.1 >/dev/null 2>&1
+apt install -y kubeadm-1.17.1 kubelet-1.17.1 kubectl-1.17.1 >/dev/null 2>&1
 
 # Start and Enable kubelet service
 echo "[TASK 5] Enable and start kubelet service"
@@ -36,7 +41,7 @@ systemctl start kubelet >/dev/null 2>&1
 
 # Install Openssh server
 echo "[TASK 6] Install and configure ssh"
-yum install -y -q openssh-server >/dev/null 2>&1
+apt install -y openssh-server >/dev/null 2>&1
 sed -i 's/.*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
 systemctl enable sshd >/dev/null 2>&1
 systemctl start sshd >/dev/null 2>&1
@@ -47,7 +52,7 @@ echo "kubeadmin" | passwd --stdin root >/dev/null 2>&1
 
 # Install additional required packages
 echo "[TASK 8] Install additional packages"
-yum install -y -q which net-tools sudo sshpass less >/dev/null 2>&1
+apt install -y which net-tools sudo sshpass less >/dev/null 2>&1
 
 # Hack required to provision K8s v1.15+ in LXC containers
 mknod /dev/kmsg c 1 11
