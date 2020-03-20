@@ -18,20 +18,15 @@ systemctl start docker
 
 # Add yum repo file for Kubernetes
 echo "[TASK 3] Add yum repo file for kubernetes"
-cat >>/etc/yum.repos.d/kubernetes.repo<<EOF
-[kubernetes]
-name=Kubernetes
-baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
-enabled=1
-gpgcheck=1
-repo_gpgcheck=0
-gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
-        https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
+apt-get update
 
 # Install Kubernetes
 echo "[TASK 4] Install Kubernetes (kubeadm, kubelet and kubectl)"
 apt install -y kubeadm-1.17.1 kubelet-1.17.1 kubectl-1.17.1 >/dev/null 2>&1
+apt-mark hold kubelet kubeadm kubectl > /dev/null 2>&1
 
 # Start and Enable kubelet service
 echo "[TASK 5] Enable and start kubelet service"
