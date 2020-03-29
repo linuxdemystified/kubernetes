@@ -1,0 +1,11 @@
+kubectl config set-credentials joy --client-certificate=joy.crt --client-key=joy.key
+
+kubectl config set-cluster kubernetes --server=https://10.237.109.211:6443 --insecure-skip-tls-verify
+
+kubectl config set-context joy-dev --cluster=kubernetes  --user=joy --namespace=default
+
+lxc file pull kmaster/root/.kube/users/joy.crt joy.crt
+
+---------------------------------------------------------------------------------------------------
+
+Refer to RBAC-kubernetes.pdf
